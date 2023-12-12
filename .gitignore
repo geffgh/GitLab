@@ -1,0 +1,12 @@
+config
+data
+logs
+registry
+runner-config
+.DS_Store
+/admin-info.md
+/backup_of_config_slash_gitlab-secrets.json
+/initial.log
+/lab.log
+/runner.log
+/.idea/

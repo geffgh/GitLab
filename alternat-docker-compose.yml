@@ -1,0 +1,33 @@
+version: '3'
+services:
+  gitlab:
+    container_name: 'gitlab'
+    image: gitlab/gitlab-ce:14.7.0-ce-0
+    platform: 'linux/amd64'
+    restart: unless-stopped
+    hostname: gitlab.example.com
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://gitlab.example.com'
+        # gitlab_rails['gitlab_shell_ssh_port'] = 8922
+        registry_external_url 'http://gitlabregistry.example.com'
+        registry['enable'] = true
+        registry['env'] = {
+          "REGISTRY_HTTP_RELATIVEURLS" => true
+        }
+        # Add any other gitlab.rb configuration here, each on its own line
+    ports:
+      - '22:22'
+      - '80:80'
+      - '443:443'
+      - '5000:5000'
+    volumes:
+      gitlab_config:/etc/gitlab
+      gitlab_logs:/var/log/gitlab
+      gitlab_data:/var/opt/gitlab
+      gitlab_registry:/var/opt/gitlab/gitlab-rails/shared/registry'
+volumes:
+  gitlab_config:
+  gitlab_logs:
+  gitlab_data:
+  gitlab_registry:

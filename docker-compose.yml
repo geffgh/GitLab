@@ -1,0 +1,44 @@
+version: '3.6'
+services:
+  gitlab:
+    container_name: 'gitlab'
+    image: 'gitlab/gitlab-ce:16.6.1-ce.0'
+    platform: 'linux/amd64'
+    restart: unless-stopped
+    hostname: 'gitlab.example.com'
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://gitlab.example.com:8980'
+        gitlab_rails['gitlab_shell_ssh_port'] = 8922
+        registry_external_url 'http://gitlabregistry.example.com:5005'
+        registry['enable'] = true
+        registry['env'] = {
+          "REGISTRY_HTTP_RELATIVEURLS" => true
+        }
+        # Add any other gitlab.rb configuration here, each on its own line
+    ports:
+      - '8980:8980'
+      - '8922:22'
+      - '5005:5005'
+      #- '80:80'
+      #- '443:443'
+      #- '22:22'
+    volumes:
+      - '$GITLAB_HOME/config:/etc/gitlab'
+      - '$GITLAB_HOME/logs:/var/log/gitlab'
+      - '$GITLAB_HOME/data:/var/opt/gitlab'
+      - '$GITLAB_HOME/registry:/var/opt/gitlab/gitlab-rails/shared/registry'
+    shm_size: '256m'
+  gitlab-runner:
+    container_name: 'gitlab-runner'
+    image: gitlab/gitlab-runner:alpine3.18
+    platform: 'linux/amd64'
+    restart: unless-stopped
+    depends_on:
+      - gitlab
+    volumes:
+      - '$GITLAB_HOME/runner-config:/etc/gitlab-runner'
+      - /var/run/docker.sock:/var/run/docker.sock
+# Need to test if I can use volumes, and if they are faster (as they apparently should be)
+#volumes:
+#  gitlab:
