@@ -22,10 +22,10 @@ services:
       - '443:443'
       - '5000:5000'
     volumes:
-      gitlab_config:/etc/gitlab
-      gitlab_logs:/var/log/gitlab
-      gitlab_data:/var/opt/gitlab
-      gitlab_registry:/var/opt/gitlab/gitlab-rails/shared/registry'
+      - gitlab_config:/etc/gitlab
+      - gitlab_logs:/var/log/gitlab
+      - gitlab_data:/var/opt/gitlab
+      - gitlab_registry:/var/opt/gitlab/gitlab-rails/shared/registry'
 volumes:
   gitlab_config:
   gitlab_logs:
